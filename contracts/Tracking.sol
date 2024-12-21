@@ -20,21 +20,6 @@ contract Tracking {
     mapping(address => Shipment[]) public shipments;
     uint256 public shipmentCount;
 
-    struct TyepShipment {
-        address sender;
-        address receiver;
-        uint256 pickupTime;
-        uint256 deliveryTime;
-        uint256 distance;
-        uint256 price;
-        string start;
-        string destination;
-        ShipmentStatus status;
-        bool isPaid;
-    }
-
-    TyepShipment[] tyepShipments;
-
     event ShipmentCreated(address indexed sender, address indexed receiver, uint256 pickupTime, uint256 distance, uint256 price, string start, string destination);
     event ShipmentInTransit(address indexed sender, address indexed receiver, uint256 pickupTime);
     event ShipmentDelivered(address indexed sender, address indexed receiver, uint256 deliveryTime);
@@ -52,48 +37,28 @@ contract Tracking {
         shipments[msg.sender].push(shipment);
         shipmentCount++;
 
-        tyepShipments.push(
-            TyepShipment(
-                msg.sender,
-                _receiver,
-                _pickupTime,
-                0,
-                _distance,
-                _price,
-                _start,
-                _destination,
-                ShipmentStatus.PENDING,
-                false
-            )
-        );
-
         emit ShipmentCreated(msg.sender, _receiver, _pickupTime, _distance, _price, _start, _destination);
     }
 
     function startShipment(address _sender, address _receiver, uint256 _index) public {
         Shipment storage shipment = shipments[_sender][_index];
-        TyepShipment storage tyepShipment = tyepShipments[_index];
 
         require(shipment.receiver == _receiver, "Invalid receiver.");
         require(shipment.status == ShipmentStatus.PENDING, "Shipment already in transit.");
 
         shipment.status = ShipmentStatus.IN_TRANSIT;
-        tyepShipment.status = ShipmentStatus.IN_TRANSIT;
 
         emit ShipmentInTransit(_sender, _receiver, shipment.pickupTime);
     }
 
     function completeShipment(address _sender, address _receiver, uint256 _index) public {
         Shipment storage shipment = shipments[_sender][_index];
-        TyepShipment storage tyepShipment = tyepShipments[_index];
 
         require(shipment.receiver == _receiver, "Invalid receiver.");
         require(shipment.status == ShipmentStatus.IN_TRANSIT, "Shipment not in transit.");
         require(!shipment.isPaid, "Shipment already paid.");
 
         shipment.status = ShipmentStatus.DELIVERED;
-        tyepShipment.status = ShipmentStatus.DELIVERED;
-        tyepShipment.deliveryTime = block.timestamp;
         shipment.deliveryTime = block.timestamp;
 
         uint256 amount = shipment.price;
@@ -101,7 +66,6 @@ contract Tracking {
         payable(shipment.sender).transfer(amount);
 
         shipment.isPaid = true;
-        tyepShipment.isPaid = true;
 
         emit ShipmentDelivered(_sender, _receiver, shipment.deliveryTime);
         emit ShipmentPaid(_sender, _receiver, amount);
@@ -116,7 +80,15 @@ contract Tracking {
         return shipments[_sender].length;
     }
 
-    function getAllTransactions() public view returns (TyepShipment[] memory) {
-        return tyepShipments;
+    function getAllTransactions() public view returns (Shipment[] memory) {
+        uint256 totalShipments;
+        for (uint i = 0; i < shipments[msg.sender].length; i++) {
+            totalShipments++;
+        }
+        Shipment[] memory allShipments = new Shipment[](totalShipments);
+        for (uint i = 0; i < totalShipments; i++) {
+            allShipments[i] = shipments[msg.sender][i];
+        }
+        return allShipments;
     }
 }

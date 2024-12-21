@@ -15,6 +15,13 @@ export default ({ setCreateShipmentModel, allShipmentsdata }) => {
   
       return dataTime;
     };
+
+    const isNotComplete = (status) => {
+      if(status == 0 || status == 1){
+        return true;
+      }
+      return false;
+    }
   
     console.log(allShipmentsdata);
   
@@ -44,7 +51,8 @@ export default ({ setCreateShipmentModel, allShipmentsdata }) => {
             </thead>
             <tbody className="text-gray-600 divide-y">
               {allShipmentsdata
-              ?.filter((shipment) => shipment.status === 0 || shipment.status === 1) .map((shipment, idx) => (
+              ?.map((shipment, idx) => (
+                shipment.status === 1 ? (
                 <tr key={idx}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {idx}
@@ -83,6 +91,7 @@ export default ({ setCreateShipmentModel, allShipmentsdata }) => {
                     </div>
                   </td>
                 </tr>
+                ): null
               ))}
             </tbody>
           </table>

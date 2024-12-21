@@ -20,12 +20,7 @@ export default ({
     {
       avatar: images.userProfile,
     },
-    {
-      avatar: images.shipCount,
-    },
-    {
-      avatar: images.send,
-    },
+    
   ];
 
   const openModelBox = (text) => {
@@ -43,7 +38,7 @@ export default ({
     <section className="py-0 pb-14">
       <div className="max-w-screen-xl mx-auto px-4 md:px-8">
         <div className="mt-12">
-          <ul className="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
+          <ul className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
             {team.map((item, i) => (
               <li key={i}>
                 <div
