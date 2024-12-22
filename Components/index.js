@@ -7,7 +7,7 @@ import Profile from "./Profile";
 import GetShipment from "./GetShipment";
 import CompleteShipment from "./CompleteShipment";
 import StartShipment from "./StartShipment";
-import Track from "./Track"
+
 import Table_delivery from "./Table_delivery";
 import StartTracking from "./StartTracking";
 import MapView from "./MapView";
@@ -30,7 +30,7 @@ export {
   GetShipment,
   CompleteShipment,
   StartShipment,
-  Track,
+
   Table_delivery,
   StartTracking,
   MapView,

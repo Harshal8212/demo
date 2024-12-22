@@ -10,7 +10,15 @@ const TrackPage = ({ trackingInfo }) => {
   const { getShipment } = useContext(TrackingContext); // assuming this function is part of the context
 
   if (!trackingInfo) {
-    return <p>Tracking information not found.</p>;
+    return (
+      <>
+        <div class="flex items-center justify-center py-10">
+
+          <h1 class="text-4xl font-bold">Tracking is not yet started</h1>
+
+          </div>
+      </>
+    );
   }
 
   const router = useRouter();
@@ -59,7 +67,7 @@ export async function getServerSideProps(context) {
   const { id } = context.params; // Corrected to `id`
 
   // Fetch data from the API route
-  const response = await fetch(`http://localhost:3000/api/getTrackingInfo?index=${id}`);
+  const response = await fetch(`${process.env.BASE_URL}/api/getTrackingInfo?index=${id}`);
   const result = await response.json();
 
   if (!result.success) {

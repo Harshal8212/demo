@@ -1,19 +1,18 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-
 import { useRouter } from "next/router";
-
 
 export default ({ getModel, setGetModel, getShipment }) => {
   const [index, setIndex] = useState(0);
   const [singleShipmentData, setSingleShipmentData] = useState();
-  const router = useRouter()
+  const [isButtonClicked, setIsButtonClicked] = useState(false); // State to track button click
+  const router = useRouter();
+
   const getshipmentData = async () => {
     const getData = await getShipment(index);
     setSingleShipmentData(getData);
+    setIsButtonClicked(true); // Mark the button as clicked
     console.log(getData);
   };
-  console.log(singleShipmentData);
 
   const converTime = (time) => {
     const newTime = new Date(time);
@@ -55,7 +54,7 @@ export default ({ getModel, setGetModel, getShipment }) => {
           </div>
           <div className="max-w-sm mx-auto py-3 space-y-3 text-center">
             <h4 className="text-lg font-medium text-gray-800">
-              Product Tracting Details
+              Product Tracking Details
             </h4>
 
             <form onSubmit={(e) => e.preventDefault()}>
@@ -68,43 +67,43 @@ export default ({ getModel, setGetModel, getShipment }) => {
                 />
               </div>
 
-              <button
-                onClick={() => getshipmentData()}
-                className="block w-full mt-3 py-3 px-4 font-medium text-sm text-center text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg ring-offset-2 ring-indigo-600 focus:ring-2"
-              >
-                Get details
-              </button>
+              {!isButtonClicked && ( // Conditionally render button if not clicked
+                <button
+                  onClick={() => getshipmentData()}
+                  className="block w-full mt-3 py-3 px-4 font-medium text-sm text-center text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg ring-offset-2 ring-indigo-600 focus:ring-2"
+                >
+                  Get details
+                </button>
+              )}
             </form>
 
             {singleShipmentData == undefined ? (
               ""
             ) : (
-              
-                  <div className="text-left">
-                  <p>Sender: {singleShipmentData.sender.slice(0)}</p>
-                  <p>Recevier: {singleShipmentData.receiver.slice(0)}</p>
-                  <p>PickupTime: {converTime(singleShipmentData.pickupTime)}</p>
-                  <p>
-                    DeliveryTime: {converTime(singleShipmentData.deliveryTime)}
-                  </p>
-                  <p>Distance: {singleShipmentData.distance}</p>
-                  <p>Price: {singleShipmentData.price}</p>
-        
-                  <p>
-                    Paid:{" "}
-                    {singleShipmentData.isPaid ? "Complete" : "Not Complete"}
-                  </p>
-                  {(singleShipmentData.status === 0 || singleShipmentData.status === 1) && (
+              <div className="text-left">
+                <p>Sender: {singleShipmentData.sender.slice(0)}</p>
+                <p>Receiver: {singleShipmentData.receiver.slice(0)}</p>
+                <p>PickupTime: {converTime(singleShipmentData.pickupTime)}</p>
+                <p>
+                  DeliveryTime: {converTime(singleShipmentData.deliveryTime)}
+                </p>
+                <p>Distance: {singleShipmentData.distance}</p>
+                <p>Price: {singleShipmentData.price}</p>
+
+                <p>
+                  Paid:{" "}
+                  {singleShipmentData.isPaid ? "Complete" : "Not Complete"}
+                </p>
+                {(singleShipmentData.status === 0 ||
+                  singleShipmentData.status === 1) && (
                   <button
-                    onClick={() => window.open(`/Tracking/${index}`, '_blank')}
+                    onClick={() => window.open(`/Tracking/${index}`, "_blank")}
                     className="block w-full mt-3 py-3 px-4 font-medium text-sm text-center text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg ring-offset-2 ring-indigo-600 focus:ring-2"
                   >
                     TRACK
                   </button>
                 )}
-                </div>
-                
- 
+              </div>
             )}
           </div>
         </div>

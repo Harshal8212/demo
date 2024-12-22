@@ -46,7 +46,7 @@ export default ({ setCreateShipmentModel, allShipmentsdata }) => {
                 <th className="py-3 px-6">Delivery Time</th>
                 <th className="py-3 px-6">Paid</th>
                 <th className="py-3 px-6">Status</th>
-                <th className="py-3 px-6">Start Tracking</th>
+                <th className="py-3 px-6"> current Locations</th>
               </tr>
             </thead>
             <tbody className="text-gray-600 divide-y">
@@ -80,11 +80,11 @@ export default ({ setCreateShipmentModel, allShipmentsdata }) => {
                   <td className="px-6 py-4 whitespace-nowrap">
                   <div className="mt-3 md:mt-0">
                         <p
-                            onClick={() => router.push(`delivery/${idx}`)}
+                            onClick={() => window.open(`/delivery/getCoordinates/${idx}`, '_blank')}
                             href="#"
                             className="inline-block px-4 py-2 text-white duration-150 font-medium bg-gray-800 hover:bg-gray-700 active:bg-gray-900 md:text-sm rounded-lg md:inline-flex"
                         >
-                            Track
+                            Add Location
                         </p>
                         
 

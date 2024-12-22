@@ -33,12 +33,14 @@ export default async function handler(req, res) {
       },
       { new: true, upsert: true } // new: return the updated document, upsert: create if not exists
     );
-
+  
     console.log("Record updated/created:", updatedLocation);
 
     res.status(200).json({ done: true, data: updatedLocation });
+    
   } catch (error) {
     console.error("Error handling the request:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
+ 
 }

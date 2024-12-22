@@ -16,14 +16,34 @@ const MapView = ({ sourceLat, sourceLng, destLat, destLng }) => {
 
       // Instantiate a directions service
       const directionsService = new google.maps.DirectionsService();
-      const directionsRenderer = new google.maps.DirectionsRenderer({ map });
+      const directionsRenderer = new google.maps.DirectionsRenderer({ map, suppressMarkers: true, });
 
       // Create markers
-      new google.maps.Marker({
+      const markerA = new google.maps.Marker({
+        position: pointA,
+        title: 'Source Location',
+        map: map,
+        icon: {
+          url: '/img/marker_pin.png',
+          size: new google.maps.Size(64, 64),         // Define original size of the icon
+          scaledSize: new google.maps.Size(64, 64),   // Define scaled size to adjust the icon size on the map
+          
+          shadow: null      // Set the anchor point (where the marker "sticks" to the map)
+      },
+    });
+      
+      const markerB = new google.maps.Marker({
         position: pointB,
         title: 'Source Location',
         map: map,
-        icon: '/img/marker.png',
+        icon: {
+          url: '/img/marker.png',
+          size: new google.maps.Size(64, 64),         // Define original size of the icon
+          scaledSize: new google.maps.Size(64, 64),   // Define scaled size to adjust the icon size on the map
+          
+          shadow: null      // Set the anchor point (where the marker "sticks" to the map)
+      },
+      
       });
 
       // Calculate and display the route

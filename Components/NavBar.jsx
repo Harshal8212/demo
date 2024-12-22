@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-
+import Image from "next/image";
 import { TrackingContext } from "../Conetxt/TrackingContext";
 import { Nav1, Nav2, Nav3 } from "../Components/index";
 export default () => {
@@ -31,11 +31,12 @@ export default () => {
       <div className="gap-x-14 items-center max-w-screen-xl mx-auto px-4 md:flex md:px-8">
         <div className="flex items-center justify-between py-5 md:block">
           <a href="#">
-            <img
-              src="./Shipment_logo.png"
+           
+            <Image
+              src="/Shipment_logo.png"
+              alt="Shipement LOGO"
               width={120}
               height={30}
-              alt="Shipement LOGO"
             />
           </a>
           <div className="md:hidden">

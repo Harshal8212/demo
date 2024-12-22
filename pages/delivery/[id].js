@@ -10,6 +10,9 @@ import  { useRouter } from "next/router";
 
 export default function Tracking({ Component, pageProps }) {
 
+  const router = useRouter()
+  const { latitude, longitude } = router.query;
+
   const {
     currentUser,
     createShipment,
@@ -24,6 +27,8 @@ export default function Tracking({ Component, pageProps }) {
     <>
       <StartTracking 
       getShipment={getShipment}
+      latitude={latitude}
+      longitude={longitude}
       />
       
     </>

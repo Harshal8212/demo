@@ -134,7 +134,7 @@ export const TrackingProvider = ({ children }) => {
 
       const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
       const contract = fetchContract(provider);
-      const shipment = await contract.getShipment(accounts[0], index x* 1);
+      const shipment = await contract.getShipment(accounts[0], index * 1);
 
       const SingleShipment = {
         sender: shipment[0],

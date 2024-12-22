@@ -10,23 +10,26 @@ import {
   Grid, 
   Box 
 } from '@mui/material'
-import useGeolocation from "./GeolocationComponent";
+
 import {
     setDefaults,
     fromAddress
   } from "react-geocode";
 
 
-export default ({ getShipment }) => {
+export default ({ getShipment , latitude, longitude}) => {
   const [index, setIndex] = useState(0);
   const [singleShipmentData, setSingleShipmentData] = useState();
-  const { loading, error, latitude, longitude } = useGeolocation();
+
+
   const [destination, setDestination] = useState("")  
   const [destination_latitude, setDestinationLatitude] = useState(null);
   const [destination_longitude, setDestinationLongitude] = useState(null);
   const router = useRouter()
   const {id} = router.query;
-
+  console.log("kdnednjkendwe");
+  console.log(latitude, longitude);
+  
   
   //shipent with that index
   useEffect(() => {
@@ -112,10 +115,12 @@ export default ({ getShipment }) => {
       const data = await response.json();
       console.log("Response from server:", data);
       alert("UPDATED");
+      
     } catch (error) {
       console.error("Error:", error);
       alert("Failed to contact middleware");
     }
+    router.push(`../delivery`)
   };
   return (
     <>
