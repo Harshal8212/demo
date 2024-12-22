@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
   reactStrictMode: true,
+  env: {
+    GOOGLE_MAP_API: process.env.GOOGLE_MAP_API,
+  }
 }
-
-module.exports = nextConfig

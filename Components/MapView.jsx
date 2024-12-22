@@ -69,7 +69,7 @@ const MapView = ({ sourceLat, sourceLng, destLat, destLng }) => {
 
     // Load the Google Maps API and initialize the map
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyCg4BOAiSoQxSGdzayh9wlyg3vU3Puuu7E&callback=initMap`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAP_API}&callback=initMap`;
     script.async = true;
     script.defer = true;
     window.initMap = initMap;
