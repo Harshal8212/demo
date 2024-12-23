@@ -27,6 +27,8 @@ Create a `.env` file in the root of your project and add the following variables
 DATABASE_URL=mongodb://localhost:27017/Shipment_project
 BASE_URL=http://localhost:3000/
 NEXT_PUBLIC_GOOGLE_MAP_API=<KEY>
+NEXT_PUBLIC_TRACKING_CONTRACT_ADDRESS = <TRACKING_COTRACT_ADDRESS>
+NEXT_PUBLIC_ADMINLOGIN_CONTRACT_ADDRESS = <ADMINLOGIN_CONTRACT_ADDRESS>
 ```
 
 Replace `<KEY>` with your actual Google Maps API key.
