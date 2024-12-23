@@ -12,6 +12,5 @@ export default {
   compShipment,
   startShipment,
   userProfile,
- 
   avatar,
 };

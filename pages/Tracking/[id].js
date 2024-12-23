@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { MapView, ShippingStatus } from "../../Components/index";
 import React, { useState, useEffect, useContext } from "react"; // import useContext
 
-import { TrackingContext } from "../../Conetxt/TrackingContext"; // corrected import path
+import { TrackingContext } from "../../Context/TrackingContext"; // corrected import path
 
 const TrackPage = ({ trackingInfo }) => {
   const { getShipment } = useContext(TrackingContext); // assuming this function is part of the context

@@ -9,6 +9,7 @@ export default ({
   setOpenProfile,
   currentUser,
   getShipmentsCount,
+  user
 }) => {
   const [count, setCount] = useState();
   useEffect(() => {
@@ -19,6 +20,9 @@ export default ({
       setCount(allData);
     };
   }, []);
+
+  
+ 
   return openProfile ? (
     <div className="fixed inset-0 z-10 overflow-y-auto">
       <div
@@ -53,12 +57,16 @@ export default ({
                 src={images.avatar}
                 alt="Bonnie image"
               />
-              <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-                Welcome Trader
-              </h5>
+             
 
-              <span class="text-sm text-gray-500 dark:text-gray-400 ">
+             <h1 class="text-2xl font-extrabold text-center text-navy-900 mb-3">
+                {user.email}
+              </h1>
+
+
+              <span class="text-lg text-gray-500 dark:text-gray-700 ">
                 {currentUser}
+                
               </span>
 
               <div class="flex mt-4 space-x-3 md:mt-6">

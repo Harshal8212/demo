@@ -1,7 +1,7 @@
 import {
   StartTracking
 } from "../../Components/index";
-import { TrackingContext } from "../../Conetxt/TrackingContext";
+import { TrackingContext } from "../../Context/TrackingContext";
 import React, { useState, useEffect, useContext } from "react";
 
 //INTERNAL IMPORT

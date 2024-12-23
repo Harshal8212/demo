@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 
-//INTERNAL IMPORT
+// INTERNAL IMPORT
 import {
   Table,
   Form,
@@ -9,10 +9,12 @@ import {
   CompleteShipment,
   GetShipment,
   StartShipment,
+  LoginPage,
 } from "../Components/index";
-import { TrackingContext } from "../Conetxt/TrackingContext";
+import { TrackingContext } from "../Context/TrackingContext";
+import { AdminContext } from '../Context/AdminContext';
 
-const index = () => {
+const Index = () => {
   const {
     currentUser,
     createShipment,
@@ -23,65 +25,94 @@ const index = () => {
     getShipmentsCount,
   } = useContext(TrackingContext);
 
-  //STATE VARIABLE
+  const { 
+    registerAdmin,
+    validateLogin,
+    logout,
+    removeAdminByEmail,
+    getAdminByEmail,
+    getAllAdmins,
+    isEmailRegistered,
+    currentAccount,
+    user } = useContext(AdminContext);
+    
+
+  // STATE VARIABLES
   const [createShipmentModel, setCreateShipmentModel] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
   const [startModal, setStartModal] = useState(false);
   const [completeModal, setCompleteModal] = useState(false);
   const [getModel, setGetModel] = useState(false);
-  //DATA STATE VARIABLE
-  const [allShipmentsdata, setallShipmentsdata] = useState();
+
+  // DATA STATE VARIABLE
+  const [allShipmentsdata, setallShipmentsdata] = useState([]);
 
   useEffect(() => {
-    const getCampaignsData = getAllShipment();
+    
+    if (user) {
+      const fetchShipments = async () => {
+        
+        const allData = await getAllShipment();
+        setallShipmentsdata(allData);
+      };
+      fetchShipments();
+    }
+  }, [user, getAllShipment]);
 
-    return async () => {
-      const allData = await getCampaignsData;
-      setallShipmentsdata(allData);
-    };
-  }, []);
+  
+  
 
-  return (
-    <>
-      <Services
-        setOpenProfile={setOpenProfile}
-        setCompleteModal={setCompleteModal}
-        setGetModel={setGetModel}
-        setStartModal={setStartModal}
-      />
+  // Render the login page if the user is not logged in
+  if (user ) {
+    
+    return (
+      <>
+        <Services
+          setOpenProfile={setOpenProfile}
+          setCompleteModal={setCompleteModal}
+          setGetModel={setGetModel}
+          setStartModal={setStartModal}
+        />
+  
+        <Table
+          setCreateShipmentModel={setCreateShipmentModel}
+          allShipmentsdata={allShipmentsdata}
+        />
+        <Form
+          createShipmentModel={createShipmentModel}
+          createShipment={createShipment}
+          setCreateShipmentModel={setCreateShipmentModel}
+        />
+        <Profile
+          openProfile={openProfile}
+          setOpenProfile={setOpenProfile}
+          currentUser={currentUser}
+          getShipmentsCount={getShipmentsCount}
+          user={user}
+        />
+        <CompleteShipment
+          completeModal={completeModal}
+          setCompleteModal={setCompleteModal}
+          completeShipment={completeShipment}
+        />
+        <GetShipment
+          getModel={getModel}
+          setGetModel={setGetModel}
+          getShipment={getShipment}
+        />
+        <StartShipment
+          startModal={startModal}
+          setStartModal={setStartModal}
+          startShipment={startShipment}
+        />
+      </>
+    );
+  }
 
-      <Table
-        setCreateShipmentModel={setCreateShipmentModel}
-        allShipmentsdata={allShipmentsdata}
-      />
-      <Form
-        createShipmentModel={createShipmentModel}
-        createShipment={createShipment}
-        setCreateShipmentModel={setCreateShipmentModel}
-      />
-      <Profile
-        openProfile={openProfile}
-        setOpenProfile={setOpenProfile}
-        currentUser={currentUser}
-        getShipmentsCount={getShipmentsCount}
-      />
-      <CompleteShipment
-        completeModal={completeModal}
-        setCompleteModal={setCompleteModal}
-        completeShipment={completeShipment}
-      />
-      <GetShipment
-        getModel={getModel}
-        setGetModel={setGetModel}
-        getShipment={getShipment}
-      />
-      <StartShipment
-        startModal={startModal}
-        setStartModal={setStartModal}
-        startShipment={startShipment}
-      />
-    </>
-  );
+  
+
+  return <LoginPage />;
 };
 
-export default index;
+export default Index;
+

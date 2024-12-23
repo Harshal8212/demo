@@ -3,8 +3,8 @@ import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 
 //INTERNAL IMPORT
-import tracking from "../Conetxt/Tracking.json";
-const ContractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+import tracking from "./Tracking.json";
+const ContractAddress = process.env.NEXT_PUBLIC_TRACKING_CONTRACT_ADDRESS;
 const ContractABI = tracking.abi;
 
 //---FETCHING SMART CONTRACT
@@ -51,7 +51,7 @@ export const TrackingProvider = ({ children }) => {
     try {
       const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
       const contract = fetchContract(provider);
-
+      
       const shipments = await contract.getAllTransactions();
       const allShipments = shipments.map((shipment) => ({
         sender: shipment.sender,
@@ -65,6 +65,8 @@ export const TrackingProvider = ({ children }) => {
         isPaid: shipment.isPaid,
         status: shipment.status,
       }));
+     
+      
 
       return allShipments;
     } catch (error) {
