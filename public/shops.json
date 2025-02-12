@@ -1,0 +1,23 @@
+[
+    {
+      "shopName": "Shop A",
+      "address": "123 Main Street, New York, NY"
+    },
+    {
+      "shopName": "Shop B",
+      "address": "456 Elm Street, Los Angeles, CA"
+    },
+    {
+      "shopName": "Shop C",
+      "address": "789 Oak Avenue, Chicago, IL"
+    },
+    {
+      "shopName": "Shop D",
+      "address": "321 Maple Road, Houston, TX"
+    },
+    {
+      "shopName": "Shop E",
+      "address": "654 Pine Lane, Miami, FL"
+    }
+  ]
+  

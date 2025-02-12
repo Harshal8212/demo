@@ -94,6 +94,7 @@ const Index = () => {
           completeModal={completeModal}
           setCompleteModal={setCompleteModal}
           completeShipment={completeShipment}
+          getShipment = {getShipment}
         />
         <GetShipment
           getModel={getModel}
@@ -104,6 +105,7 @@ const Index = () => {
           startModal={startModal}
           setStartModal={setStartModal}
           startShipment={startShipment}
+          getShipment = {getShipment}
         />
       </>
     );

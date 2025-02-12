@@ -58,10 +58,10 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
-  const registerAdmin = async (email, phoneNumber, storeName, password) => {
+  const registerAdmin = async (email, phoneNumber, storeName, walletAddress, password) => {
     try {
       const contract = await fetchContract();
-      const tx = await contract.registerAdmin(email, phoneNumber, storeName, password);
+      const tx = await contract.registerAdmin(email, phoneNumber, storeName, walletAddress, password);
       await tx.wait();
       console.log("Admin registered:", email);
       return { success: true, message: "Admin registered successfully" };
@@ -150,17 +150,21 @@ export const AdminProvider = ({ children }) => {
       const contract = await fetchContract();
       const admins = await contract.getAllAdmins();
       console.log("All admins data:", admins);
-      return admins.map((admin) => ({
-        email: admin.email,
-        phoneNumber: admin.phoneNumber,
-        storeName: admin.storeName,
+  
+      // Destructure each admin array to create a formatted object
+      return admins.map(([email, phoneNumber, storeName, walletAddress]) => ({
+        email,
+        phoneNumber,
+        storeName,
+        walletAddress,
       }));
     } catch (error) {
       console.error("Error fetching all admins:", error);
       throw error;
     }
   };
-
+  
+  
   // Check if email is registered
   const isEmailRegistered = async (email) => {
     try {

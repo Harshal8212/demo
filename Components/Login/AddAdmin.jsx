@@ -1,8 +1,8 @@
 'use client';
 
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, Mail, Lock, Phone, Building,XCircle } from 'lucide-react';
+import { User, Mail, Lock, Phone, Building,XCircle , Wallet} from 'lucide-react';
 import { AdminContext } from '../../Context/AdminContext';
 
 export default function AddAdmin() {
@@ -18,6 +18,17 @@ export default function AddAdmin() {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [shops, setShops] = useState([]);
+
+  useEffect(() => {
+  
+      fetch("/shops.json") // Ensure shops.json is in the public folder
+      .then((response) => response.json())
+      .then((data) => setShops(data))
+      .catch((error) => console.error("Error fetching shops:", error));
+  
+      
+    }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +41,7 @@ export default function AddAdmin() {
         }
     
 
-    const result = await registerAdmin(formData.email, formData.phone, formData.storename, formData.password);
+    const result = await registerAdmin(formData.email, formData.phone, formData.storename, formData.walletAddress, formData.password);
     
     if (result.success) {
       setSuccess(result.message);
@@ -41,6 +52,7 @@ export default function AddAdmin() {
         confirmPassword: '',
         phone: '',
         storename: '',
+        walletAddress: '',
       });
       // Redirect to admin list after successful creation
       setTimeout(() => window.location.reload(), 1000);
@@ -175,13 +187,34 @@ export default function AddAdmin() {
                   required
                 >
                   <option value="">Select store</option>
-                  <option value="warehouse 1">warehouse 1</option>
-                  <option value="store 1">store 1</option>
-                  <option value="warehouse 2">warehouse2</option>
-                  <option value="warehouse 3">warehouse 3</option>
+                  {shops.map((shop) => (
+                      <option key={shop.shopName} value={shop.shopName}>{shop.shopName}</option>
+                    ))}
                 </select>
               </div>
             </div>
+
+            {/*Wallet Address*/}
+            <div className="space-y-2">
+              <label htmlFor="walletAddress" className="text-sm font-medium text-gray-700 block">
+                Wallet Address
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Wallet className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  id="walletAddress"
+                  value={formData.walletAddress}
+                  onChange={(e) => setFormData({ ...formData, walletAddress: e.target.value })}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  pattern="^0x[a-fA-F0-9]{40}$" 
+                  maxlength="42"
+                  placeholder="0x . . . . . . . . . . . "
+                />
+              </div>
+            </div>
+
           </div>
 
           <div className="flex gap-4 mt-8">
