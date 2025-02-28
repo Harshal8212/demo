@@ -11,6 +11,8 @@ export default ({ setCreateShipmentModel, allShipmentsdata }) => {
   };
 
   const printTable = () => {
+    console.log("All shipement", allShipmentsdata);
+    
     const tableContents = document.getElementById("shipmentTable").innerHTML;
     const originalContents = document.body.innerHTML;
     document.body.innerHTML = tableContents;

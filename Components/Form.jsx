@@ -1,6 +1,6 @@
 import {useEffect, useContext,  useState } from "react";
 import { AdminContext } from '../Context/AdminContext';
-
+import { QRCodeSVG } from "qrcode.react"
 export default ({
   
   setCreateShipmentModel,

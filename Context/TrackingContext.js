@@ -28,6 +28,8 @@ export const TrackingProvider = ({ children }) => {
       const provider = new ethers.providers.Web3Provider(connection);
       const signer = provider.getSigner();
       const contract = fetchContract(signer);
+      console.log("kashjdfmdfasjfsajfjsddsjfghfjsdghf");
+      
       const createItem = await contract.createShipment(
         receiver,
         new Date(pickupTime).getTime(),
@@ -37,10 +39,13 @@ export const TrackingProvider = ({ children }) => {
         destination,
         {
           value: ethers.utils.parseUnits(price, 18),
+     
         }
       );
+      console.log("Sending value:", ethers.utils.parseUnits(price, 18).toString());
+
       await createItem.wait();
-      console.log(createItem);
+      console.log("Create Item", createItem);
       location.reload();
     } catch (error) {
       console.log("Something went wrong", error);
@@ -53,6 +58,8 @@ export const TrackingProvider = ({ children }) => {
       const contract = fetchContract(provider);
       
       const shipments = await contract.getAllTransactions();
+      console.log("ALL Shipmentsdasaf", shipments);
+      
       const allShipments = shipments.map((shipment) => ({
         sender: shipment.sender,
         receiver: shipment.receiver,
@@ -136,20 +143,23 @@ export const TrackingProvider = ({ children }) => {
 
       const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
       const contract = fetchContract(provider);
-      const shipment = await contract.getShipment(accounts[0], index * 1);
-
+      const shipment = await contract.getShipment(index * 1);
+      console.log("shipemnt" , shipment);
+      
       const SingleShipment = {
-        sender: shipment[0],
-        receiver: shipment[1],
-        pickupTime: shipment[2].toNumber(),
-        deliveryTime: shipment[3].toNumber(),
-        distance: shipment[4].toNumber(),
-        price: ethers.utils.formatEther(shipment[5].toString()),
-        start: shipment[6],
-        destination: shipment[7],
-        status: shipment[8],
-        isPaid: shipment[9],
+        sender: shipment[1],
+        receiver: shipment[2],
+        pickupTime:shipment[3].toNumber(),
+        deliveryTime: shipment[4].toNumber(),
+        distance: shipment[5].toNumber(``),
+        price: ethers.utils.formatEther(shipment[6].toString()),
+        start: shipment[7],
+        destination: shipment[8],
+        status: shipment[9],
+        isPaid: shipment[10],
       };
+      console.log("single ", SingleShipment);
+      
 
       return SingleShipment;
     } catch (error) {
@@ -177,8 +187,7 @@ export const TrackingProvider = ({ children }) => {
       console.log(receiver);
       
       const shipment = await contract.startShipment(
-        accounts[0],
-        receiver,
+       
         index,
         {
           gasLimit: 300000,

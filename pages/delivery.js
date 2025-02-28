@@ -6,17 +6,20 @@ import {
   CompleteShipment,
   GetShipment,
   StartShipment,
-  Table_delivery
+  Table_delivery,
+  DeliveryLoginPage
 } from "../Components/index";
 import { TrackingContext } from "../Context/TrackingContext";
+import { DeliveryContext } from "../Context/DeliveryContext";
 import React, { useState, useEffect, useContext } from "react";
+
 
 //INTERNAL IMPORT
 import  { useRouter } from "next/router";
 
 
 export default function Delivery({ Component, pageProps }) {
-
+  
   const {
     currentUser,
     createShipment,
@@ -25,7 +28,13 @@ export default function Delivery({ Component, pageProps }) {
     getShipment,
     startShipment,
     getShipmentsCount,
+    
   } = useContext(TrackingContext);
+
+  const {deliveryPerson} = useContext(DeliveryContext)
+
+ 
+
   const router = useRouter()
   const { id } = router.query;
   const index = 0;
@@ -33,20 +42,33 @@ export default function Delivery({ Component, pageProps }) {
   const [createShipmentModel, setCreateShipmentModel] = useState(false);
   const [allShipmentsdata, setallShipmentsdata] = useState();
   useEffect(() => {
-      const getCampaignsData = getAllShipment();
-  
-      return async () => {
-        const allData = await getCampaignsData;
-        setallShipmentsdata(allData);
-      };
-    }, []);
+      if (deliveryPerson) {
+        const fetchShipments = async () => {
+          
+          const allData = await getAllShipment();
+          setallShipmentsdata(allData);
+        };
+        fetchShipments();
+      }
+      
+    }, [deliveryPerson, getAllShipment]);
+    console.log("deliveryPerson:", deliveryPerson); // ✅ Debugging output
 
-  return (
-    <>
-      <Table_delivery
-              setCreateShipmentModel={setCreateShipmentModel}
-              allShipmentsdata={allShipmentsdata}
-      />
-    </>
-  );
+if (!deliveryPerson) {
+  return <DeliveryLoginPage />;
+}
+
+    if(deliveryPerson){
+      return (
+        <>
+        
+          <Table_delivery
+                  setCreateShipmentModel={setCreateShipmentModel}
+                  allShipmentsdata={allShipmentsdata}
+          />
+        </>
+      );
+    }
+    return < DeliveryLoginPage />
+
 };

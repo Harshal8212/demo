@@ -13,6 +13,11 @@ async function main() {
   await admin.deployed();
   console.log(`Admin contract deployed successfully to: ${admin.address}`);
 
+
+  const DeliveryPerson = await hre.ethers.getContractFactory("DeliveryManLogin");
+  const deliveryPerson = await DeliveryPerson.deploy();
+  await deliveryPerson.deployed();
+  console.log(`Delivery Person contract deployed successfully to: ${deliveryPerson.address}`);
   console.log("Deployment completed!");
 }
 

@@ -1,29 +1,30 @@
 import React, { createContext, useState, useEffect } from "react";
 import { ethers } from "ethers";
 
-
-
 // ABI and Contract Details
-import adminContract from "./AdminLogin.json";
-const contractAddress = process.env.NEXT_PUBLIC_ADMINLOGIN_CONTRACT_ADDRESS;
-const contractABI = adminContract.abi;
+import deliveryContract from "./DeliveryManLogin.json";
+const contractAddress = process.env.NEXT_PUBLIC_DELIVERYMAN_CONTRACT_ADDRESS;
+const contractABI = deliveryContract.abi;
 
-export const AdminContext = createContext();
+export const DeliveryContext = createContext();
 
-export const AdminProvider = ({ children }) => {
-  const [currentAccount, setCurrentAccount] = useState(null);
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    checkSession();
-  }, []);
+export const DeliveryProvider = ({ children }) => {
+    const [currentAccount, setCurrentAccount] = useState(null);
+    const [deliveryPerson, setdeliveryPerson] = useState(null);
+    useEffect(() => {
+        checkSession();
+    }, []);
 
   const checkSession = async () => {
-    const res = await fetch("/api/auth/session");
+    const res = await fetch("/api/auth/session_for_deliveryMan");
     const data = await res.json();
     if (data.user) {
-      setUser(data.user);
+     
+      
+        setdeliveryPerson(data.user);
     }
+    console.log(data);
+    
   };
 
   const fetchContract = async () => {
@@ -60,15 +61,15 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
-  const registerAdmin = async (email, phoneNumber, storeName, walletAddress, password) => {
+  const registerDeliveryMan = async (email, phoneNumber, vehicleType, password) => {
     try {
       const contract = await fetchContract();
-      const tx = await contract.registerAdmin(email, phoneNumber, storeName, walletAddress, password);
+      const tx = await contract.registerDeliveryMan(email, phoneNumber, vehicleType, password);
       await tx.wait();
-      console.log("Admin registered:", email);
-      return { success: true, message: "Admin registered successfully" };
+      console.log("DeliveryMan registered:", email);
+      return { success: true, message: "DeliveryMan registered successfully" };
     } catch (error) {
-      console.error("Error registering admin:", error);
+      console.error("Error registering delivery man:", error);
       if (error.message.includes("EmailAlreadyRegistered")) {
         return { success: false, message: "This email is already registered" };
       }
@@ -81,17 +82,17 @@ export const AdminProvider = ({ children }) => {
       const contract = await fetchContract();
       const isValid = await contract.validateLogin(email, password);
       if (isValid) {
-        const res = await fetch("/api/auth/session", {
+        const res = await fetch("/api/auth/session_for_deliveryMan", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
+          body: JSON.stringify({ delivery_Person_email:email }),
         });
         if (!res.ok) {
           const errorData = await res.json();
           throw new Error(errorData.message || 'Failed to create session');
         }
         const data = await res.json();
-        setUser({ email, isLoggedIn: true });
+        setdeliveryPerson({ email, isLoggedIn: true });
         return true;
       }
       return false;
@@ -101,78 +102,54 @@ export const AdminProvider = ({ children }) => {
     }
   };
 
-  const Logout = async () => {
-    try {
-      
-      const res = await fetch("/api/auth/session", { method: "DELETE" });
-      
-      
-      if (res.ok) {
-        setUser(null);
-      }
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  };
-
-  // Remove Admin by Email
-  const removeAdminByEmail = async (email) => {
+  const removeDeliveryManByEmail = async (email) => {
     try {
       const contract = await fetchContract();
-      const tx = await contract.removeAdminByEmail(email);
+      const tx = await contract.removeDeliveryManByEmail(email);
       await tx.wait();
-      console.log("Admin removed by email:", email);
+      console.log("DeliveryMan removed by email:", email);
       return true;
     } catch (error) {
-      console.error("Error removing admin by email:", error);
+      console.error("Error removing delivery man by email:", error);
       throw error;
     }
   };
 
-  // Get Admin Info by Email
-  const getAdminByEmail = async (email) => {
+  const getDeliveryManByEmail = async (email) => {
     try {
       const contract = await fetchContract();
-      const adminInfo = await contract.getAdminByEmail(email);
-      console.log("Admin info retrieved:", adminInfo);
+      const deliveryManInfo = await contract.getDeliveryManByEmail(email);
+      console.log("DeliveryMan info retrieved:", deliveryManInfo);
       return {
-        email: adminInfo[0],
-        phoneNumber: adminInfo[1],
-        storeName: adminInfo[2]
+        email: deliveryManInfo[0],
+        phoneNumber: deliveryManInfo[1],
+        vehicleType: deliveryManInfo[2],
       };
     } catch (error) {
-      console.error("Error fetching admin info by email:", error);
+      console.error("Error fetching delivery man info by email:", error);
       throw error;
     }
   };
 
-  // Get All Admins
-  const getAllAdmins = async () => {
+  const getAllDeliveryMen = async () => {
     try {
       const contract = await fetchContract();
-      const admins = await contract.getAllAdmins();
-      console.log("All admins data:", admins);
-  
-      // Destructure each admin array to create a formatted object
-      return admins.map(([email, phoneNumber, storeName, walletAddress]) => ({
+      const deliveryMen = await contract.getAllDeliveryMen();
+      return deliveryMen.map(([email, phoneNumber, vehicleType]) => ({
         email,
         phoneNumber,
-        storeName,
-        walletAddress,
+        vehicleType,
       }));
     } catch (error) {
-      console.error("Error fetching all admins:", error);
+      console.error("Error fetching all delivery men:", error);
       throw error;
     }
   };
-  
-  
-  // Check if email is registered
+
   const isEmailRegistered = async (email) => {
     try {
       const contract = await fetchContract();
       const isRegistered = await contract.isEmailRegistered(email);
-      console.log("Is email registered:", isRegistered);
       return isRegistered;
     } catch (error) {
       console.error("Error checking if email is registered:", error);
@@ -181,22 +158,20 @@ export const AdminProvider = ({ children }) => {
   };
 
   return (
-    <AdminContext.Provider
+    <DeliveryContext.Provider
       value={{
         connectWallet,
-        registerAdmin,
+        registerDeliveryMan,
         validateLogin,
-        Logout,
-        removeAdminByEmail,
-        getAdminByEmail,
-        getAllAdmins,
+        removeDeliveryManByEmail,
+        getDeliveryManByEmail,
+        getAllDeliveryMen,
         isEmailRegistered,
         currentAccount,
-        user,
+        deliveryPerson
       }}
     >
       {children}
-    </AdminContext.Provider>
+    </DeliveryContext.Provider>
   );
 };
-

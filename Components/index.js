@@ -13,7 +13,9 @@ import StartTracking from "./StartTracking";
 import MapView from "./MapView";
 import ShippingStatus from "./Desgin_components/ShipmentStatus";
 import AddAdmin from "./Login/AddAdmin";
-import LoginPage from "./Login/LoginPage";
+import LoginPage from "./Login/LoginPageAdmin";
+import DeliveryLoginPage from "./Login/LoginPageDelivery";
+
 ManageAdmins
 //SVG
 import Nav1 from "./SVG/Nav1";
@@ -42,6 +44,7 @@ export {
   AddAdmin,
   LoginPage,
   ManageAdmins,
+  DeliveryLoginPage,
   //SVG
   Nav1,
   Nav2,

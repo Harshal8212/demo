@@ -1,11 +1,56 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Box,
+  Chip,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  styled,
+} from "@mui/material"
+import { User, UserCheck, Clock, TruckIcon as TruckDelivery, MapPin, DollarSign, CreditCard } from "lucide-react"
+
+const ScrollableCardContent = styled(CardContent)(({ theme }) => ({
+  maxHeight: "400px",
+  overflowY: "auto",
+  "&::-webkit-scrollbar": {
+    width: "0.4em",
+  },
+  "&::-webkit-scrollbar-track": {
+    boxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+    webkitBoxShadow: "inset 0 0 6px rgba(0,0,0,0.00)",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: "rgba(0,0,0,.1)",
+    outline: "1px solid slategrey",
+  },
+}))
+
+
 
 export default ({ getModel, setGetModel, getShipment }) => {
+
+
+
+
   const [index, setIndex] = useState(0);
   const [singleShipmentData, setSingleShipmentData] = useState();
   const [isButtonClicked, setIsButtonClicked] = useState(false); // State to track button click
-  const router = useRouter();
+  const  [details, setDetails] = useState([])
+
+  const resetAllStates = () => {
+    setIndex("")
+    setSingleShipmentData()
+    setIsButtonClicked(false)
+    setDetails([])
+
+  };
+
 
   const getshipmentData = async () => {
     const getData = await getShipment(index);
@@ -14,29 +59,56 @@ export default ({ getModel, setGetModel, getShipment }) => {
     console.log(getData);
   };
 
-  const converTime = (time) => {
-    const newTime = new Date(time);
-    const dataTime = new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(newTime);
+   const converTime = (time) => {
+      const newTime = new Date(time);
+      const dataTime = new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(newTime);
+  
+      return dataTime;
+    };
 
-    return dataTime;
-  };
 
+  useEffect(() => {
+    if(singleShipmentData){
+      setDetails( [
+        { icon: User, label: "Sender", value: singleShipmentData.sender.slice(0) },
+        { icon: UserCheck, label: "Receiver", value: singleShipmentData.receiver.slice(0) },
+        { icon: Clock, label: "Pickup Time", value: converTime(singleShipmentData.pickupTime) },
+        { icon: TruckDelivery, label: "Delivery Time", value: converTime(singleShipmentData.deliveryTime) },
+        { icon: MapPin, label: "Distance", value: singleShipmentData.distance },
+        { icon: DollarSign, label: "Price", value: singleShipmentData.price },
+        {
+          icon: CreditCard,
+          label: "Payment Status",
+          value: singleShipmentData.isPaid ? "Paid" : "Unpaid",
+          chip: true,
+        },
+      ])
+  }
+  }, [singleShipmentData])
+  
+  
+  
   return getModel ? (
     <div className="fixed inset-0 z-10 overflow-y-auto">
       <div
         className="fixed inset-0 w-full h-full bg-black opacity-40"
-        onClick={() => setGetModel(false)}
+        onClick={() => {setGetModel(false)
+          resetAllStates()
+        }}
       ></div>
       <div className="flex items-center min-h-screen px-4 py-8">
         <div className="relative w-full max-w-lg p-4 mx-auto bg-white rounded-md shadow-lg">
           <div className="flex justify-end">
             <button
               className="p-2 text-gray-400 rounded-md hover:bg-gray-100"
-              onClick={() => setGetModel(false)}
+              onClick={() => {setGetModel(false)
+
+                resetAllStates()
+              }}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -80,30 +152,56 @@ export default ({ getModel, setGetModel, getShipment }) => {
             {singleShipmentData == undefined ? (
               ""
             ) : (
-              <div className="text-left">
-                <p>Sender: {singleShipmentData.sender.slice(0)}</p>
-                <p>Receiver: {singleShipmentData.receiver.slice(0)}</p>
-                <p>PickupTime: {converTime(singleShipmentData.pickupTime)}</p>
-                <p>
-                  DeliveryTime: {converTime(singleShipmentData.deliveryTime)}
-                </p>
-                <p>Distance: {singleShipmentData.distance}</p>
-                <p>Price: {singleShipmentData.price}</p>
-
-                <p>
-                  Paid:{" "}
-                  {singleShipmentData.isPaid ? "Complete" : "Not Complete"}
-                </p>
-                {(singleShipmentData.status === 0 ||
-                  singleShipmentData.status === 1) && (
-                  <button
+              <Card elevation={3}>
+              <ScrollableCardContent>
+                <List>
+              
+                  {details.map((detail, index) => (
+                    <ListItem key={index} divider={index !== details.length - 1}>
+                      <ListItemIcon>
+                        <detail.icon size={20} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={detail.label}
+                        secondary={
+                          detail.chip ? (
+                            <Chip label={detail.value} color={singleShipmentData.isPaid ? "success" : "error"} size="small" />
+                          ) : (
+                            <Typography variant="body2" style={{ wordBreak: "break-word" }}>
+                              {detail.value}
+                            </Typography>
+                          )
+                        }
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </ScrollableCardContent>
+              {(singleShipmentData.status === 0 || singleShipmentData.status === 1) && (
+                <Box p={2}>
+                  <Button
+                    variant="contained"
+                    
+                    startIcon={<MapPin />}
+                    fullWidth
                     onClick={() => window.open(`/Tracking/${index}`, "_blank")}
-                    className="block w-full mt-3 py-3 px-4 font-medium text-sm text-center text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg ring-offset-2 ring-indigo-600 focus:ring-2"
+                    sx={
+                      {color: "white",
+                        backgroundColor: "#4f46e5", // indigo-600
+                        "&:hover": { backgroundColor: "#6366f1" }, // indigo-500
+                        "&:active": { backgroundColor: "#4338ca" }, // indigo-700
+                        borderRadius: "0.5rem", // rounded-lg
+                        ringOffset: "2px",
+                        ringColor: "#4f46e5",
+                        "&:focus": { outline: "2px solid #4f46e5" },
+                      }
+                    }
                   >
                     TRACK
-                  </button>
-                )}
-              </div>
+                  </Button>
+                </Box>
+              )}
+            </Card>
             )}
           </div>
         </div>
