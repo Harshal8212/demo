@@ -3,13 +3,19 @@ import { ethers } from "ethers";
 
 // ABI and Contract Details
 import deliveryContract from "./DeliveryManLogin.json";
-const contractAddress = process.env.NEXT_PUBLIC_DELIVERYMAN_CONTRACT_ADDRESS;
+
+
+import contractAddresses from "./contract-addresses.json";
+const contractAddress = contractAddresses[1].DeliveryManLogin;
 const contractABI = deliveryContract.abi;
 
 export const DeliveryContext = createContext();
 
 export const DeliveryProvider = ({ children }) => {
     const [currentAccount, setCurrentAccount] = useState(null);
+    const [currentUser, setCurrentUser] = useState(null);
+
+
     const [deliveryPerson, setdeliveryPerson] = useState(null);
     useEffect(() => {
         checkSession();
@@ -93,6 +99,7 @@ export const DeliveryProvider = ({ children }) => {
         }
         const data = await res.json();
         setdeliveryPerson({ email, isLoggedIn: true });
+        setCurrentUser(email)
         return true;
       }
       return false;
@@ -156,6 +163,7 @@ export const DeliveryProvider = ({ children }) => {
       throw error;
     }
   };
+  
 
   return (
     <DeliveryContext.Provider
@@ -168,7 +176,8 @@ export const DeliveryProvider = ({ children }) => {
         getAllDeliveryMen,
         isEmailRegistered,
         currentAccount,
-        deliveryPerson
+        deliveryPerson,
+        currentUser
       }}
     >
       {children}

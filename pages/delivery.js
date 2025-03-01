@@ -21,13 +21,15 @@ import  { useRouter } from "next/router";
 export default function Delivery({ Component, pageProps }) {
   
   const {
-    currentUser,
+  
     createShipment,
     getAllShipment,
     completeShipment,
     getShipment,
     startShipment,
     getShipmentsCount,
+    pickUpShipment,
+    getShipmentsByDeliveryPerson
     
   } = useContext(TrackingContext);
 
@@ -65,6 +67,9 @@ if (!deliveryPerson) {
           <Table_delivery
                   setCreateShipmentModel={setCreateShipmentModel}
                   allShipmentsdata={allShipmentsdata}
+                  currentUser = {deliveryPerson.delivery_Person_email}
+                  pickUpShipment={pickUpShipment}
+                  getShipmentsByDeliveryPerson={getShipmentsByDeliveryPerson}
           />
         </>
       );

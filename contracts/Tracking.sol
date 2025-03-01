@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 contract Tracking {
-    enum ShipmentStatus { PENDING, IN_TRANSIT, DELIVERED }
+    enum ShipmentStatus { PENDING, PICK_UP,  IN_TRANSIT, DELIVERED }
 
     struct Shipment {
         uint256 id; // Unique shipment ID (index in array)
@@ -18,6 +18,8 @@ contract Tracking {
         bool isPaid;
     }
 
+    mapping(uint256 => string) public shipmentToDeliveryPerson;
+
     Shipment[] public allShipments; // Global storage for all shipments
     uint256 public shipmentCount; // Auto-increment ID
 
@@ -25,6 +27,7 @@ contract Tracking {
     event ShipmentInTransit(uint256 indexed id, address indexed sender, address indexed receiver);
     event ShipmentDelivered(uint256 indexed id, address indexed sender, address indexed receiver, uint256 deliveryTime);
     event ShipmentPaid(uint256 indexed id, address indexed sender, address indexed receiver, uint256 amount);
+    event ShipmentPickedUp(uint256 indexed id, string deliveryPerson);
 
     constructor() {
         shipmentCount = 0;
@@ -65,7 +68,7 @@ contract Tracking {
         Shipment storage shipment = allShipments[_id];
         require(shipment.status == ShipmentStatus.PENDING, "Shipment already in transit.");
 
-        shipment.status = ShipmentStatus.IN_TRANSIT;
+        shipment.status = ShipmentStatus.PICK_UP;
 
         emit ShipmentInTransit(_id, shipment.sender, shipment.receiver);
     }
@@ -115,5 +118,38 @@ contract Tracking {
 
     function getShipmentsCount() public view returns (uint256) {
         return allShipments.length;
+    }
+
+    function pickUpShipment(uint256 _id, string memory _deliveryPersonEmail) public {
+        require(_id < allShipments.length, "Invalid shipment ID.");
+        
+        Shipment storage shipment = allShipments[_id];
+        require(shipment.status == ShipmentStatus.PICK_UP, "Shipment is not available for pickup.");
+        
+        shipment.status = ShipmentStatus.IN_TRANSIT;
+        shipmentToDeliveryPerson[_id] = _deliveryPersonEmail;
+
+        emit ShipmentPickedUp(_id, _deliveryPersonEmail);
+    }
+
+    
+    function getShipmentsByDeliveryPerson(string memory _deliveryPersonEmail) public view returns (Shipment[] memory) {
+        uint256 count = 0;
+        for (uint256 i = 0; i < allShipments.length; i++) {
+            if (keccak256(abi.encodePacked(shipmentToDeliveryPerson[i])) == keccak256(abi.encodePacked(_deliveryPersonEmail))) {
+                count++;
+            }
+        }
+
+        Shipment[] memory shipments = new Shipment[](count);
+        uint256 index = 0;
+        for (uint256 i = 0; i < allShipments.length; i++) {
+            if (keccak256(abi.encodePacked(shipmentToDeliveryPerson[i])) == keccak256(abi.encodePacked(_deliveryPersonEmail))) {
+                shipments[index] = allShipments[i];
+                index++;
+            }
+        }
+
+        return shipments;
     }
 }

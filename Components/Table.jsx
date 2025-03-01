@@ -90,6 +90,8 @@ export default ({ setCreateShipmentModel, allShipmentsdata }) => {
                   {shipment.status === 0
                     ? "Pending"
                     : shipment.status === 1
+                    ? "PICK_UP"
+                    : shipment.status === 2
                     ? "IN_TRANSIT"
                     : "Delivered"}
                 </td>

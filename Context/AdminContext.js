@@ -5,7 +5,9 @@ import { ethers } from "ethers";
 
 // ABI and Contract Details
 import adminContract from "./AdminLogin.json";
-const contractAddress = process.env.NEXT_PUBLIC_ADMINLOGIN_CONTRACT_ADDRESS;
+
+import contractAddresses from "./contract-addresses.json";
+const contractAddress = contractAddresses[0].AdminLogin;
 const contractABI = adminContract.abi;
 
 export const AdminContext = createContext();

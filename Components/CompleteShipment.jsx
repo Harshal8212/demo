@@ -21,14 +21,13 @@ export default ({ completeModal, setCompleteModal, completeShipment, getShipment
         const shipment = await getShipment(index);
         console.log(shipment);
 
-        if (shipment.status !== 1) {
-          if (shipment.status === 0) {
-            setError("Shipment is not yet started (Status: PENDING)");
-          } else if (shipment.status === 2) {
-            setError("Shipment already completed (Status: COMPLETED)");
-          } else {
-            setError(`Unexpected status (${shipment.status}).`);
-          }
+        if (shipment.status !== 2) {
+          if(shipment.status === 0)
+          setError(`Shipment NOT Started (Status: PENDING)`);
+          if(shipment.status === 2)
+            setError("Shipment Not Yet Picked (Status: PICK_UP)")
+          if(shipment.status === 3)
+            setError("Shipment already Completed (Status: COMPLETED)")
           return;
         }
 

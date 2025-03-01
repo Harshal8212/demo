@@ -24,8 +24,10 @@ export default ({ startModal, setStartModal, startShipment, getShipment }) => {
 
         if (shipment.status !== 0) {
           if(shipment.status === 1)
-          setError(`Shipment already started (Status: IN_TRANSIT)`);
+          setError(`Shipment already started (Status: PICK_UP)`);
           if(shipment.status === 2)
+            setError("Shipment already Completed (Status: IN_TRANSIT)")
+          if(shipment.status === 3)
             setError("Shipment already Completed (Status: COMPLETED)")
           return;
         }

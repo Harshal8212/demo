@@ -4,7 +4,8 @@ import { ethers } from "ethers";
 
 //INTERNAL IMPORT
 import tracking from "./Tracking.json";
-const ContractAddress = process.env.NEXT_PUBLIC_TRACKING_CONTRACT_ADDRESS;
+import contractAddresses from "./contract-addresses.json";
+const ContractAddress = contractAddresses[2].Tracking;
 const ContractABI = tracking.abi;
 
 //---FETCHING SMART CONTRACT
@@ -81,6 +82,8 @@ export const TrackingProvider = ({ children }) => {
     }
   };
 
+  
+
   const getShipmentsCount = async () => {
     try {
       if (!window.ethereum) return "Install MetaMask";
@@ -115,8 +118,6 @@ export const TrackingProvider = ({ children }) => {
      
       
       const transaction = await contract.completeShipment(
-        accounts[0],
-        receiver,
         index,
         {
           gasLimit: 300000,
@@ -177,8 +178,6 @@ export const TrackingProvider = ({ children }) => {
         method: "eth_accounts",
       });
      
-      
-
       const web3Modal = new Web3Modal();
       const connection = await web3Modal.connect();
       const provider = new ethers.providers.Web3Provider(connection);
@@ -201,6 +200,60 @@ export const TrackingProvider = ({ children }) => {
       console.log("Error occurred while starting shipment", error);
     }
   };
+  const pickUpShipment = async (id, deliveryPersonEmail) => {
+    if (!window.ethereum) return "Install MetaMask";
+
+    const accounts = await window.ethereum.request({
+      method: "eth_accounts",
+    });
+   
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = fetchContract(signer);
+    console.log("pickupemail", deliveryPersonEmail);
+    
+    const transaction = await contract.pickUpShipment(
+      id,
+      deliveryPersonEmail,
+      {
+        gasLimit: 300000,
+      }
+    );
+    await transaction.wait();
+   
+    location.reload();
+  
+  }
+  
+  const getShipmentsByDeliveryPerson = async (deliveryPersonEmail) => {
+    const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
+    const contract = fetchContract(provider);
+    
+    const shipments = await contract.getShipmentsByDeliveryPerson(deliveryPersonEmail);
+    console.log("delivery person Shipments", shipments);
+    
+    const allShipments = shipments.map((shipment) => ({
+      id : shipment.id.toNumber(),
+      sender: shipment.sender,
+      receiver: shipment.receiver,
+      price: ethers.utils.formatEther(shipment.price.toString()),
+      pickupTime: shipment.pickupTime.toNumber(),
+      deliveryTime: shipment.deliveryTime.toNumber(),
+      distance: shipment.distance.toNumber(),
+      start: shipment.start,
+      destination: shipment.destination,
+      isPaid: shipment.isPaid,
+      status: shipment.status,
+    }));
+   
+    
+
+    return allShipments;
+  } 
+
+
 
   //---CHECK WALLET CONNECTED
   const checkIfWalletConnected = async () => {
@@ -263,6 +316,8 @@ export const TrackingProvider = ({ children }) => {
         getShipmentsCount,
         DappName,
         currentUser,
+        pickUpShipment,
+        getShipmentsByDeliveryPerson
       }}
     >
       {children}

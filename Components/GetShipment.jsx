@@ -177,7 +177,7 @@ export default ({ getModel, setGetModel, getShipment }) => {
                   ))}
                 </List>
               </ScrollableCardContent>
-              {(singleShipmentData.status === 0 || singleShipmentData.status === 1) && (
+              {(singleShipmentData.status === 2) && (
                 <Box p={2}>
                   <Button
                     variant="contained"

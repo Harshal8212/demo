@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { CheckCircle, Clock, Truck } from 'lucide-react';
+import { CheckCircle, Clock, Truck, Package } from 'lucide-react';
 import StatusStep from './StatusStep';
 
 const ConnectorLine = styled(Box)(({ theme, isactive }) => ({
@@ -13,6 +13,7 @@ const ConnectorLine = styled(Box)(({ theme, isactive }) => ({
 
 const steps = [
   { title: 'Pending', icon: Clock },
+  { title: 'Pick Up', icon: Package },
   { title: 'In-transit', icon: Truck },
   { title: 'Delivered', icon: CheckCircle }
 ];
@@ -25,6 +26,8 @@ const isStepActive = (stepIndex, currentStatus) => {
       return stepIndex <= 1;
     case 2:
       return stepIndex <= 2;
+    case 3:
+      stepIndex <= 3 ;
     default:
       return false;
   }
